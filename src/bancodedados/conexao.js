@@ -7,7 +7,7 @@ const pool = new Pool({
     password: 'CIO2010a+',
     database: 'dindin'
 })
-
+ 
 const query = (text, param) => {
     return pool.query(text, param);
 }
