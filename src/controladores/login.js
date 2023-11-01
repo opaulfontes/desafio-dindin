@@ -1,6 +1,7 @@
 const { query } = require('../bancodedados/conexao')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const senhaToken = require('../dadossensiveis/config');
 
 const login = async (req, res) => {
     const { email, senha } = req.body;
@@ -24,7 +25,7 @@ const login = async (req, res) => {
             return res.status(400).json({ mensagem: 'E-mail e senha incorretos!'});
         }
 
-        const token = jwt.sign({id: usuario.id}, 'senhaSeguraParaToken', { expiresIn: '8h' });
+        const token = jwt.sign({id: usuario.id}, senhaToken, { expiresIn: '8h' });
 
         const { senha: _, ...dadosUsuario} = usuario;
 
