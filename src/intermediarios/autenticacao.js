@@ -22,7 +22,9 @@ const filtroAutenticacao = async (req, res, next) => {
 
         const [usuario] = rows;
 
-        req.usuario = usuario;
+        const { senha: _, ...dadosUsuario} = usuario;
+
+        req.usuario = dadosUsuario;
 
         next();
     } catch {
