@@ -128,9 +128,33 @@ const atualizarTransacao = async (req, res) => {
     }
 }
 
+const excluirTransacao = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+
+    try {
+        const transacao = await query('select * from transacoes where usuario_id = $1 and id = $2', [usuario.id, id]);
+
+        if (transacao.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'A transação não existe' });
+        }
+
+        const transacaoExcluida = await query('delete from transacoes where id = $1', [id])
+
+        if (transacaoExcluida.rowCount <= 0) {
+            return res.status(500).json({ mensagem: `Erro interno: ${error.message}`});
+        }
+
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}`});
+    }
+}
+
 module.exports = {
     listarTransacoes,
     detalharTransacao,
     cadastrarTransacao,
-    atualizarTransacao
+    atualizarTransacao,
+    excluirTransacao
 }
