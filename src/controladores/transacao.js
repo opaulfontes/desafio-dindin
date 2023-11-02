@@ -151,10 +151,28 @@ const excluirTransacao = async (req, res) => {
     }
 }
 
+const consultarExtrato = async (req, res) => {
+    const {usuario} = req;
+
+    try {
+        const queryExtrato = 'select sum(cast(valor as numeric)) as saldo from transacoes where usuario_id = $1 and tipo = $2'
+        const saldoEntrada = await query(queryExtrato, [usuario.id, 'entrada']);
+        const saldoSaida = await query(queryExtrato, [usuario.id, 'saida']);
+
+        return res.json({
+            entrada: Number(saldoEntrada.rows[0].saldo) ?? 0,
+            saida: Number(saldoSaida.rows[0].saldo) ?? 0
+        });
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}`});
+    }
+}
+
 module.exports = {
     listarTransacoes,
     detalharTransacao,
     cadastrarTransacao,
     atualizarTransacao,
-    excluirTransacao
+    excluirTransacao,
+    consultarExtrato
 }
