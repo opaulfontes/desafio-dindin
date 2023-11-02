@@ -3,7 +3,7 @@ const { cadastrarUsuario, obterPerfilUsuario, atualizarPerfilUsuario } = require
 const { login } = require('./controladores/login');
 const { filtroAutenticacao } = require('./intermediarios/autenticacao');
 const { listarCategorias } = require('./controladores/categoria');
-const { listarTransacoes, detalharTransacao } = require('./controladores/transacao');
+const { listarTransacoes, detalharTransacao, cadastrarTransacao } = require('./controladores/transacao');
 
 const rotas = express()
 
@@ -19,5 +19,6 @@ rotas.get('/categoria', listarCategorias);
 
 rotas.get('/transacao', listarTransacoes);
 rotas.get('/transacao/:id', detalharTransacao);
+rotas.post('/transacao', cadastrarTransacao);
 
 module.exports = rotas
