@@ -1,5 +1,5 @@
 const express = require('express')
-const { cadastrarUsuario, obterPerfilUsuario } = require('./controladores/usuario');
+const { cadastrarUsuario, obterPerfilUsuario, atualizarPerfilUsuario } = require('./controladores/usuario');
 const { login } = require('./controladores/login');
 const { filtroAutenticacao } = require('./intermediarios/autenticacao');
 
@@ -11,5 +11,6 @@ rotas.post('/login', login);
 rotas.use(filtroAutenticacao)
 
 rotas.get('/usuario', obterPerfilUsuario);
+rotas.put('/usuario', atualizarPerfilUsuario);
 
 module.exports = rotas
