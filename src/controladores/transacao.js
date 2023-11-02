@@ -2,9 +2,32 @@ const { query } = require("../bancodedados/conexao");
 
 const listarTransacoes = async (req, res) => {
     const { usuario } = req;
+    const { filtro } = req.query;
+
+    if (filtro && !Array.isArray(filtro)) {
+        return res.status(400).json({ mensagem: 'O filtro precisa ser um array'});
+    }
 
     try {
-        const transacoes = await query('select * from transacoes where usuario_id = $1', [usuario.id]);
+        let queryLike = '';
+        let arrayFiltro;
+
+        if (filtro) {
+            arrayFiltro = filtro.map((item) => `%${item}%`);
+            queryLike += `and c.descricao iLike any($2)`;
+        }
+
+        const queryTransacoes = `
+            select t.*, c.descricao as categoria_nome from transacoes t
+            left join categorias c
+            on t.categoria_id = c.id
+            where t.usuario_id = $1 
+            ${queryLike}
+        `;
+          
+        const paramFiltro = filtro ? [usuario.id, arrayFiltro] : [usuario.id];
+
+        const transacoes = await query(queryTransacoes, paramFiltro);
         return res.json(transacoes.rows);
     } catch (error) {
         return res.status(500).json({ mensagem: `${error.message}`});
